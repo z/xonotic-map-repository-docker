@@ -8,9 +8,10 @@ WORKDIR /application
 
 RUN python setup.py install
 
-ADD common/wait-for-postgres.sh /bin/wait-for-postgres.sh
+COPY api/xmra.ini /root/.xmra.ini
+COPY common/wait-for-postgres.sh /bin/wait-for-postgres.sh
 RUN chmod +x /bin/wait-for-postgres.sh
 
-CMD /bin/wait-for-postgres.sh postgres xmra-serve
+CMD /bin/wait-for-postgres.sh postgres xmra-init; xmra-serve
 
 EXPOSE 8010
