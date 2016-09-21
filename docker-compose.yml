@@ -1,0 +1,30 @@
+version: '2'
+services:
+  postgres:
+    restart: on-failure:10
+    build:
+      context: build
+      dockerfile: postgres.Dockerfile
+    environment:
+      - POSTGRES_USER=xonotic
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=map_repo
+    volumes:
+      - ./db/data:/var/lib/postgresql/data:rw
+    ports:
+      - "5432:5432"
+  api:
+    build:
+      context: build
+      dockerfile: api.Dockerfile
+    environment:
+      - VIRTUAL_HOST=api.xmr.local
+    # command: /bin/wait-for-postgres.sh postgres /bin/bash
+    links:
+      - postgres
+  web:
+    image: jwilder/nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    links:
+      - api
