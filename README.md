@@ -6,6 +6,13 @@ The architecture of xonotic-map-repository dockerized
 
 Docker, follow the [docker installation instructions](https://docs.docker.com/engine/installation/) if you don't currently have it installed.
 
+Add the following to your /etc/hosts:
+
+```
+127.0.0.1 www.xonotic-repo.local
+127.0.0.1 api.xonotic-repo.local
+```
+
 ## Running
 
 To run in **development mode**:

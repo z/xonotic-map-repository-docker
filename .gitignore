@@ -2,3 +2,4 @@
 .swo
 .swp
 repos
+build/nginx/conf/default.conf
