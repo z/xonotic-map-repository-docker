@@ -33,7 +33,6 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./static:/application/static
       - ./build/nginx/conf:/etc/nginx/conf.d:rw
       - ./build/nginx/vhost:/etc/nginx/vhost.d:rw
       - /var/run/docker.sock:/tmp/docker.sock:ro
