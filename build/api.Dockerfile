@@ -9,9 +9,11 @@ WORKDIR /application
 RUN python setup.py install
 
 COPY api/xmra.ini /root/.xmra.ini
-COPY common/wait-for-postgres.sh /bin/wait-for-postgres.sh
+COPY api/wait-for-postgres.sh /bin/wait-for-postgres.sh
 RUN chmod +x /bin/wait-for-postgres.sh
 
-CMD /bin/wait-for-postgres.sh postgres xmra-init; xmra-serve
+RUN mkdir -p /root/.xonotic/repo_resources/packages/
+
+CMD /bin/wait-for-postgres.sh postgres xmra-init; xmra-add --all; xmra-serve
 
 EXPOSE 8010
