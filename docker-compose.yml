@@ -15,7 +15,7 @@ services:
   api:
     build:
       context: build
-      dockerfile: api.Dockerfile
+      dockerfile: containers/api.Dockerfile
     ports:
       - "8080:80"
     environment:
@@ -27,7 +27,8 @@ services:
 #    command: /bin/bash -c "/bin/wait-for-postgres.sh postgres xmra-init; xmra-add --all; xmra-serve"
 #    command: /bin/bash -c "/bin/wait-for-postgres.sh postgres gunicorn -b '0.0.0.0:80' --reload xmra.app:api"
     volumes:
-      - ./build/api/maplist.txt:/application/maplist.txt
+      - ./build/containers/api/maplist.txt:/application/maplist.txt
+      - ./build/containers/api/authorized_keys:/root/.ssh/authorized_keys
 # Optionally load local packages
 #      - ./packages:/root/.xonotic/repo_resources/packages
     links:
@@ -35,15 +36,16 @@ services:
   web:
     build:
       context: build
-      dockerfile: web.Dockerfile
+      dockerfile: containers/web.Dockerfile
     ports:
       - "80:80"
     environment:
       - DEFAULT_HOST=www.xonotic-repo.local
     command: /bin/wait-for-api.sh api
     volumes:
-      - ./build/nginx/conf:/etc/nginx/conf.d:rw
-      - ./build/nginx/vhost:/etc/nginx/vhost.d:rw
+      - ./build/containers/nginx/conf:/etc/nginx/conf.d:rw
+      - ./build/containers/nginx/vhost:/etc/nginx/vhost.d:rw
+      - ./build/containers/web/id_rsa:/root/.ssh/id_rsa
       - /var/run/docker.sock:/tmp/docker.sock:ro
     links:
       - api

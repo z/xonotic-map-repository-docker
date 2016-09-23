@@ -7,7 +7,9 @@ done
 
 echo " - API is up"
 
-# Setup keys
+chown root:root -R /root/.ssh/
+
 echo rsync -azvh root@api:/root/.xonotic/repo_resources/ /application/resources/
+rsync -azvh -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" root@api:/root/.xonotic/repo_resources/ /application/resources/
 
 forego start -r

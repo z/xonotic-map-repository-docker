@@ -13,6 +13,12 @@ Add the following to your /etc/hosts:
 127.0.0.1 api.xonotic-repo.local
 ```
 
+Generate a key pair for the web server to rsync files down from the API server that parses the map packages.
+ 
+```
+./build/generate_keys.sh
+```
+
 ## Running
 
 To run in **development mode**:

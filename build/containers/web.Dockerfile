@@ -12,8 +12,8 @@ RUN rm -rf /application
 
 # Application
 RUN git clone --depth=1 https://github.com/z/xonotic-map-repository-web.git /application
-COPY web/config.js /application/config.js
+COPY containers/web/config.js /application/config.js
 
 # Startup
-COPY web/wait-for-api.sh /bin/wait-for-api.sh
+COPY containers/web/wait-for-api.sh /bin/wait-for-api.sh
 RUN chmod +x /bin/wait-for-api.sh
