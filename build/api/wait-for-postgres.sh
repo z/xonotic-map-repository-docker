@@ -11,9 +11,10 @@ until psql -h "$host" -U "xonotic" -c '\l'; do
   sleep 1
 done
 
-(cd /root/.xonotic/repo_resources/packages/ && while read m; do curl -LO $m; done </application/maplist.txt)
+/usr/sbin/sshd -D &
 
-xmra-init
+# Populate default map package directory with map urls from maplist.txt
+(cd /root/.xonotic/repo_resources/packages/ && while read m; do curl -LO $m; done </application/maplist.txt)
 
 >&2 echo "Postgres is up - executing command"
 exec $cmd

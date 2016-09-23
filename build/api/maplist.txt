@@ -1,4 +1,3 @@
-
 http://dl.xonotic.co/duster_mod_01.pk3
 http://dl.xonotic.co/map-derail_v1r5.pk3
 http://dl.xonotic.co/gasoline_02_fixed.pk3
