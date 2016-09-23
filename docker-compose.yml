@@ -25,9 +25,11 @@ services:
 #    command: /bin/wait-for-postgres.sh postgres xmra-serve
 #    command: /bin/bash -c "/bin/wait-for-postgres.sh postgres xmra-init; xmra-serve"
 #    command: /bin/bash -c "/bin/wait-for-postgres.sh postgres xmra-init; xmra-add --all; xmra-serve"
-#q    command: /bin/bash -c "/bin/wait-for-postgres.sh postgres gunicorn -b '0.0.0.0:80' --reload xmra.app:api"
+#    command: /bin/bash -c "/bin/wait-for-postgres.sh postgres gunicorn -b '0.0.0.0:80' --reload xmra.app:api"
     volumes:
       - ./build/api/maplist.txt:/application/maplist.txt
+# Optionally load local packages
+#      - ./packages:/root/.xonotic/repo_resources/packages
     links:
       - postgres
   web:
