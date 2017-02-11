@@ -1,0 +1,66 @@
+version: '2'
+services:
+    postgres:
+        ports:
+            - "5432:5432"
+        environment:
+            - LC_ALL=C.UTF-8
+            - POSTGRES_DB=xonotic
+            - POSTGRES_USER=xonotic
+            - POSTGRES_PASSWORD=password
+        volumes:
+            - ./db/data:/var/lib/postgresql/data:rw
+        networks:
+            xonotic-net:
+                ipv4_address: 172.42.238.201
+    memcached:
+        ports:
+            - "11211:11211"
+        networks:
+            xonotic-net:
+                ipv4_address: 172.42.238.202
+    app_api:
+        ports:
+            - "8080:80"
+        environment:
+            - VIRTUAL_HOST=api.xonotic-repo.local
+            - PGPASSWORD=password
+        volumes:
+            - ./docker/containers/nginx_proxy/id_rsa.pub:/root/.ssh/id_rsa.pub
+            - ./docker/containers/api/maplist.txt:/application/maplist.txt
+            - ./docker/containers/api/authorized_keys:/root/.ssh/authorized_keys
+            # Optionally load local packages
+            # - ./packages:/root/.xonotic/repo_resources/packages
+        networks:
+            xonotic-net:
+                ipv4_address: 172.42.238.5
+    nginx_proxy:
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            # Used to rsync parsed package data from api server to web server
+            - ./docker/containers/nginx_proxy/id_rsa:/root/.ssh/id_rsa
+            #- ./static:/application/static
+            # nginx
+            - ./docker/containers/nginx_proxy/vhost:/etc/nginx/vhost.d:rw
+            - ./docker/containers/nginx_proxy/conf:/etc/nginx/conf.d:rw
+            #- ./docker/containers/nginx_proxy/certs:/etc/nginx/certs
+            # static sites
+            - ./projects/builds/www.xonotic-repo.local:/application/www.xonotic-repo.local
+        networks:
+            xonotic-net:
+                ipv4_address: 172.42.238.2
+                aliases:
+                    - www.xonotic-repo.local
+                    - api.xonotic-repo.local
+
+
+networks:
+    xonotic-net:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.42.238.0/24
+                  gateway: 172.42.238.1

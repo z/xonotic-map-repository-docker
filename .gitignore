@@ -1,7 +1,27 @@
+# Python
+venv
+activate
+.eggs
+*.egg-info
+
+# Editors
 .idea
-.swo
-.swp
-packages
-build/containers/nginx/conf/default.conf
-build/containers/api/authorized_keys
-build/containers/web/id_rsa*
+*.swo
+*.swp
+**__pycache__**
+
+# docker
+/packages/
+/docker/containers/api/authorized_keys
+/docker/containers/nginx_proxy/id_rsa*
+/docker/containers/nginx_proxy/conf/default.conf
+
+# upstream packages
+projects/builds/*
+!projects/builds/.gitkeep
+projects/packages/*
+!projects/packages/.gitkeep
+
+# security
+docker/containers/nginx_proxy/certs/*
+!docker/containers/nginx_proxy/certs/.gitkeep

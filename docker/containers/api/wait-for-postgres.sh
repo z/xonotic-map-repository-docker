@@ -14,6 +14,8 @@ done
 /usr/sbin/sshd -D &
 
 chown root:root -R /root/.ssh/
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/authorized_keys
 
 # Populate default map package directory with map urls from maplist.txt
 (cd /root/.xonotic/repo_resources/packages/ && while read m; do curl -LO $m; done </application/maplist.txt)

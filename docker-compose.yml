@@ -1,51 +1,23 @@
 version: '2'
 services:
-  postgres:
-    restart: on-failure:10
-    image: postgres:9.4
-    ports:
-      - "5432:5432"
-    environment:
-      - LC_ALL=C.UTF-8
-      - POSTGRES_DB=xonotic
-      - POSTGRES_USER=xonotic
-      - POSTGRES_PASSWORD=password
-    volumes:
-      - ./db/data:/var/lib/postgresql/data:rw
-  api:
-    build:
-      context: build
-      dockerfile: containers/api.Dockerfile
-    ports:
-      - "8080:80"
-    environment:
-      - VIRTUAL_HOST=api.xonotic-repo.local
-      - PGPASSWORD=password
+    postgres:
+        restart: on-failure:10
+        image: postgres:9.4
+    memcached:
+        image: memcached
+    app_api:
+        build:
+            context: .
+            dockerfile: docker/containers/app_api.Dockerfile
 # These are alternative ways to connect without having to rebuild the image
-#    command: /bin/wait-for-postgres.sh postgres xmra-serve
-#    command: /bin/bash -c "/bin/wait-for-postgres.sh postgres xmra-init; xmra-serve"
-#    command: /bin/bash -c "/bin/wait-for-postgres.sh postgres xmra-init; xmra-add --all; xmra-serve"
-#    command: /bin/bash -c "/bin/wait-for-postgres.sh postgres gunicorn -b '0.0.0.0:80' --reload xmra.app:api"
-    volumes:
-      - ./build/containers/api/maplist.txt:/application/maplist.txt
-      - ./build/containers/api/authorized_keys:/root/.ssh/authorized_keys
-# Optionally load local packages
-#      - ./packages:/root/.xonotic/repo_resources/packages
-    links:
-      - postgres
-  web:
-    build:
-      context: build
-      dockerfile: containers/web.Dockerfile
-    ports:
-      - "80:80"
-    environment:
-      - DEFAULT_HOST=www.xonotic-repo.local
-    command: /bin/wait-for-api.sh api
-    volumes:
-      - ./build/containers/nginx/conf:/etc/nginx/conf.d:rw
-      - ./build/containers/nginx/vhost:/etc/nginx/vhost.d:rw
-      - ./build/containers/web/id_rsa:/root/.ssh/id_rsa
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    links:
-      - api
+#        command: /bin/wait-for-postgres.sh postgres xmra-serve
+#        command: /bin/bash -c "/bin/wait-for-postgres.sh postgres xmra-init; xmra-serve"
+        command: /bin/bash -c "/bin/wait-for-postgres.sh postgres xmra-init; xmra-add --all; xmra-serve"
+#        command: /bin/bash -c "/bin/wait-for-postgres.sh postgres gunicorn -b '0.0.0.0:80' --reload xmra.app:api"
+        links:
+            - postgres
+    nginx_proxy:
+        build:
+            context: .
+            dockerfile: docker/containers/nginx_proxy.Dockerfile
+        command: /bin/wait-for-api.sh
