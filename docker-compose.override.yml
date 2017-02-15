@@ -8,8 +8,9 @@ services:
             - POSTGRES_DB=xonotic
             - POSTGRES_USER=xonotic
             - POSTGRES_PASSWORD=password
-        volumes:
-            - ./db/data:/var/lib/postgresql/data:rw
+        # Uncomment to persist database
+        # volumes:
+        #     - ./db/data:/var/lib/postgresql/data:rw
         networks:
             xonotic-net:
                 ipv4_address: 172.42.238.201
@@ -41,7 +42,8 @@ services:
         volumes:
             # Used to rsync parsed package data from api server to web server
             - ./docker/containers/nginx_proxy/id_rsa:/root/.ssh/id_rsa
-            #- ./static:/application/static
+            - ./docker/containers/nginx_proxy/config.js:/application/www.xonotic-repo.local/config.js
+            # - ./static:/application/static
             # nginx
             - ./docker/containers/nginx_proxy/vhost:/etc/nginx/vhost.d:rw
             - ./docker/containers/nginx_proxy/conf:/etc/nginx/conf.d:rw
